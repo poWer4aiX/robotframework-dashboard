@@ -40,7 +40,7 @@ Global filters are applied to the entire dashboard, affecting all sections and g
 - **All** (ticked by default) means no tag filter is applied — all runs are shown.
 - **AND mode** (default): a run must have **all** selected tags to be included.
 - **OR mode** (toggle *Use OR*): a run needs at least **one** of the selected tags.
-- A dot (●) next to the label indicates the filter is active (i.e. *All* is not selected).
+- A dot next to the label indicates the filter is active (i.e. *All* is not selected).
 - Use the search box inside the dropdown to quickly find a tag by name.
 
 #### 3. Versions
@@ -49,7 +49,7 @@ Global filters are applied to the entire dashboard, affecting all sections and g
 - Click **Select Versions** to open the version list; tick one or more versions to narrow down the data.
 - **All** (ticked by default) means no version filter is applied.
 - **None** covers runs that have no version label set.
-- A dot (●) next to the label indicates the filter is active.
+- A dot next to the label indicates the filter is active.
 - Use the search box inside the dropdown to quickly find a version by name.
 
 #### 4. From Date / From Time
@@ -101,7 +101,7 @@ Filter Profiles let you save, name, and reapply a combination of filter settings
 - Click the **Apply Filter Profile** selector to expand the saved profiles list.
 - Click a profile name to apply all its stored filter values at once.
 - The selector displays the active profile name when the current filter state **exactly matches** a saved profile.
-- A dot (●) next to the selector means a profile was applied but filters have since been changed away from it.
+- A dot next to the selector means a profile was applied but filters have since been changed away from it.
 
 #### Updating a Profile
 

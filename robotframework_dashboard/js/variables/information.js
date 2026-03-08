@@ -138,7 +138,7 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - Save Profile: saves the profile with the selected filter values under the given name.
 - Apply Filter Profile: opens the saved profiles list. Click a profile name to apply all its stored filter values at once.
 - The select box shows the active profile name when an exact match is found, i.e. the current filter state matches a saved profile exactly.
-- A dot (●) next to the select box means a profile was applied but filters have since been changed away from it.
+- A dot next to the select box means a profile was applied but filters have since been changed away from it.
 - Update Profile: appears when the active profile's filters have been modified; click it to overwrite the saved profile with the current filter values.
 - Delete: removes that profile permanently (confirmed via a prompt).`,
     "filterRunsInformation": `Filters the dashboard to only show data for runs of the selected project (run name).
@@ -149,13 +149,13 @@ It helps identify tests with inconsistent execution times, which might be flaky 
 - 'All' (ticked by default) means no tag filter is applied — all runs are shown.
 - Use AND mode (default): a run must have ALL selected tags to be included.
 - Use OR mode (toggle 'Use OR'): a run needs at least ONE of the selected tags.
-- A dot (●) next to the label means the filter is active (i.e. 'All' is not selected).
+- A dot next to the label means the filter is active (i.e. 'All' is not selected).
 - Use the search box inside the dropdown to quickly find a tag by name.`,
     "filterVersionsInformation": `Filters runs by their project version label.
 - Click 'Select Versions' to open the version list; tick one or more versions to narrowdown the data.
 - 'All' (ticked by default) means no version filter is applied.
 - 'None' covers runs that have no version label set.
-- A dot (●) next to the label means the filter is active.
+- A dot next to the label means the filter is active.
 - Use the search box inside the dropdown to quickly find a version by name.`,
     "filterFromDateInformation": `Sets the earliest date a run must have started on to be included.
 - Runs that started before this date are excluded.

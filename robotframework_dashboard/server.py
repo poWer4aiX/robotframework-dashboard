@@ -362,7 +362,7 @@ class ApiServer:
         )
         async def dashboard_page():
             """Serve robotdashboard HTML endpoint function"""
-            robot_dashboard_html = open("robot_dashboard.html", "r").read()
+            robot_dashboard_html = open("robot_dashboard.html", "r", encoding="utf-8").read()
             return robot_dashboard_html
 
         @self.app.post("/refresh-dashboard")
