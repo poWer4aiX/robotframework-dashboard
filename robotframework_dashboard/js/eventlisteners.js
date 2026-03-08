@@ -25,7 +25,18 @@ import {
     clear_all_filters,
     setup_project_versions_in_select_filter_buttons,
     update_overview_version_select_list,
-    setup_metadata_filter
+    setup_metadata_filter,
+    build_profile_from_checks,
+    apply_filter_profile,
+    save_filter_profile_to_storage,
+    delete_filter_profile,
+    populate_filter_profile_select,
+    enter_profile_edit_mode,
+    exit_profile_edit_mode,
+    update_profile_select_display,
+    update_active_profile,
+    clear_active_profile,
+    capture_default_filters,
 } from "./filter.js"
 import { camelcase_to_underscore, underscore_to_camelcase } from "./common.js";
 import {
@@ -98,7 +109,9 @@ function setup_filter_modal() {
     // eventlistener to reset the filters
     document.getElementById("resetFilters").addEventListener("click", function () {
         clear_all_filters();
+        clear_active_profile();
         add_alert("Filters have been set to default values!", "success")
+        update_profile_select_display();
     });
     // eventlistener for all runs button
     document.getElementById("allRuns").addEventListener("click", function () {
@@ -145,6 +158,86 @@ function setup_filter_modal() {
     setup_runs_in_select_filter_buttons();
     setup_runtags_in_select_filter_buttons();
     setup_project_versions_in_select_filter_buttons();
+    // snapshot the default/initial filter state so profile checkboxes can reflect changes
+    capture_default_filters();
+    // filter profiles setup
+    populate_filter_profile_select();
+    let showingFilterProfiles = false;
+    function toggle_filter_profiles() {
+        showingFilterProfiles = !showingFilterProfiles;
+        document.getElementById("filterProfileCheckBoxes").style.display = showingFilterProfiles ? "block" : "none";
+    }
+    document.getElementById("selectFilterProfile").addEventListener("click", toggle_filter_profiles);
+    const filterProfileCheckBoxes = document.getElementById("filterProfileCheckBoxes");
+    const selectFilterProfileElement = document.getElementById("selectFilterProfile");
+    document.body.addEventListener("click", function (event) {
+        if (showingFilterProfiles && !filterProfileCheckBoxes.contains(event.target) && !selectFilterProfileElement.contains(event.target)) {
+            toggle_filter_profiles();
+        }
+    });
+    document.getElementById("addFilterProfile").addEventListener("click", function () {
+        enter_profile_edit_mode();
+    });
+    document.getElementById("cancelFilterProfile").addEventListener("click", function () {
+        exit_profile_edit_mode();
+    });
+    document.getElementById("saveFilterProfile").addEventListener("click", function () {
+        const name = document.getElementById("filterProfileName").value.trim();
+        if (!name) {
+            add_alert("Please enter a profile name!", "warning");
+            return;
+        }
+        const profileData = build_profile_from_checks();
+        save_filter_profile_to_storage(name, profileData);
+        populate_filter_profile_select();
+        exit_profile_edit_mode();
+        update_profile_select_display();
+        add_alert(`Filter profile "${name}" saved!`, "success");
+    });
+    document.getElementById("filterProfileList").addEventListener("click", async function (event) {
+        const applyEl = event.target.closest(".filter-profile-apply");
+        const deleteEl = event.target.closest(".filter-profile-delete");
+        if (deleteEl) {
+            event.preventDefault();
+            event.stopPropagation();
+            const name = deleteEl.dataset.profile;
+            const confirmed = await confirm_action(`Are you sure you want to delete filter profile "${name}"?`);
+            if (confirmed) {
+                delete_filter_profile(name);
+                clear_active_profile();
+                populate_filter_profile_select();
+                update_profile_select_display();
+                add_alert(`Filter profile "${name}" deleted!`, "success");
+            }
+            return;
+        }
+        if (applyEl) {
+            event.preventDefault();
+            const name = applyEl.dataset.profile;
+            const profiles = settings.filterProfiles || {};
+            const profile = profiles[name];
+            if (profile) {
+                apply_filter_profile(profile, name);
+                add_alert(`Filter profile "${name}" applied`, "success");
+                update_profile_select_display();
+                populate_filter_profile_select();
+            }
+        }
+    });
+    // Update Profile button
+    document.getElementById("updateFilterProfile").addEventListener("click", function () {
+        update_active_profile();
+        populate_filter_profile_select();
+        add_alert(`Filter profile updated!`, "success");
+    });
+    // Listen for filter changes to update the profile display
+    const filterModal = document.getElementById("filtersModal");
+    filterModal.addEventListener("change", function () {
+        update_profile_select_display();
+    });
+    filterModal.addEventListener("input", function () {
+        update_profile_select_display();
+    });
 }
 
 // function to create customized view eventlisteners
@@ -384,12 +477,14 @@ function setup_settings_modal() {
 function confirm_action(message = "Are you sure?") {
     return new Promise((resolve) => {
         const settingsModal = document.getElementById("settingsModal");
+        const filtersModal = document.getElementById("filtersModal");
         const modalEl = document.getElementById("confirmModal");
         const modalBody = document.getElementById("confirmModalMessage");
         const cancelBtn = document.getElementById("confirmCancel");
         const okBtn = document.getElementById("confirmOk");
 
         settingsModal.classList.add("dimmed");
+        filtersModal.classList.add("dimmed");
         modalBody.innerHTML = message;
 
         const modal = new bootstrap.Modal(modalEl);
@@ -409,6 +504,7 @@ function confirm_action(message = "Are you sure?") {
             okBtn.removeEventListener("click", onConfirm);
             modalEl.removeEventListener("hidden.bs.modal", onHidden);
             settingsModal.classList.remove("dimmed");
+            filtersModal.classList.remove("dimmed");
         };
 
         cancelBtn.addEventListener("click", onCancel);
