@@ -1,5 +1,6 @@
 *** Settings ***
 Library    String
+Library    json
 Library    Browser
 Library    DocTest.VisualTest
 Resource    ../variables/variables.resource
@@ -58,8 +59,14 @@ Validate Component
 
 Set Run Filter
     [Arguments]    ${value}
+    Set Run Filters    ${value}
+
+Set Run Filters
+    [Arguments]    @{values}
     Click    selector=id=filters
-    Select Options By    id=runs    value    ${value}
+    FOR    ${value}    IN    @{values}
+        Select Options By    id=runs    value    ${value}
+    END
     Click    selector=id=closeFilters
 
 Set Date Filter
@@ -86,3 +93,42 @@ Change Settings
     Click    selector=id=toggleLabels
     Select Options By    id=toggleBarRounding    value    0
     Click    selector=id=closeSettings
+
+(Un)select Checkbox
+    [Arguments]    ${selector}    ${check}=True
+    ${element}    Get Element    selector=${selector}
+    ${state}    Get Property    selector=${element}    property=checked
+    ${checked}    Evaluate    "${state}" in ['true', 'True']
+    Run Keyword If    (${check} and not ${checked}) or (not ${check} and ${checked})   Click  ${element}
+
+Add Filter Profile For
+    [Arguments]    @{selected_filters}    ${profile_name}
+    Click    selector=id=filters
+    Click    selector=id=addFilterProfile
+    Fill Text    selector=id=filterProfileName    txt=${profile_name}
+    @{filters}    Create List    Runs    RunTags    Versions    FromDate    FromTime    ToDate    ToTime    Amount
+    FOR    ${filter}    IN    @{filters}
+        ${check}    Evaluate    '${filter}' in @{selected_filters}
+        (Un)select Checkbox    selector=id=profileCheck${filter}    check=${check}
+    END
+    Click    selector=id=saveFilterProfile
+    Click    selector=id=closeFilters
+
+Apply Filter Profile
+    [Arguments]    ${profile_name}
+    Click    selector=id=filters
+    Click    selector=id=selectFilterProfile
+    Click    selector=xpath=//ul[@id="filterProfileList"]/li/span[contains(text(),'${profile_name}')]
+    Click    selector=id=closeFilters
+
+Get Filter Profile Settings
+    [Arguments]    ${profile_name}
+    ${settings_str}    LocalStorage Get Item    key=settings
+    ${settings}    Loads    ${settings_str}
+    VAR    ${filter_profile}     ${settings}[filterProfiles][${profile_name}]
+    RETURN    ${filter_profile}
+
+Reset Filters
+    Click    selector=id=filters
+    Click    selector=id=resetFilters
+    Click    selector=id=closeFilters
