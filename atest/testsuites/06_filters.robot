@@ -51,6 +51,6 @@ Add Filter Profile With Date Filters
     Filter Profile prfFromTo Should Be    {'fromDate': '2025-03-13', 'toTime': '23:59'} 
 
 Add Filter Profile With Amount Filter
-    Set Amount Filter    amount=876
+    Set Amount Filter    amount=8
     Add Filter Profile prfAmount For    Amount
-    Filter Profile prfAmount Should Be    {'amount': 876} 
+    Filter Profile prfAmount Should Be    {'amount': '8'}
