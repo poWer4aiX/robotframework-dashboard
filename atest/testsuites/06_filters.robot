@@ -28,7 +28,6 @@ Add Filter Profile With Runs Filter
     Filter Profile prfRuns Should Be    {'runs': 'Tests'}
 
 Add Filter Profile With Run Tags Filter
-    [Setup]    Run Keywords    Generate Dashboard With Mixed Tags    Open Dashboard
     Set Run Tags Filter    prod    project_1
     Add Filter Profile prfTags For    RunTags
     Validate Selected Run Tags Of Filter Profile prfTags    prod    project_1    strict=True
