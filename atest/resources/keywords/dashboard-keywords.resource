@@ -97,7 +97,7 @@ Set Amount Filter
     [Arguments]    ${amount}    ${close_filter_dialog}=True
     Click    selector=id=filters
     Fill Text    selector=id=amount    txt=${amount}
-    Run Keyword If    ${close_filter_dialog}    Click    selector=id=closeFilters
+    IF    ${close_filter_dialog}    Click    selector=id=closeFilters
 
 Change Settings
     Click    selector=id=themeDark
@@ -114,7 +114,7 @@ Add Filter Profile For
 
 Add Filter Profile ${profile_name} For
     [Arguments]    @{selected_filters}    ${open_filter_dialog}=True
-    Run Keyword If    ${open_filter_dialog}   Click    selector=id=filters
+    IF    ${open_filter_dialog}   Click    selector=id=filters
     Click    selector=id=addFilterProfile
     Fill Text    selector=id=filterProfileName    txt=${profile_name}
     VAR    @{filters}    Runs    RunTags    Versions    FromDate    FromTime    ToDate    ToTime    Amount
