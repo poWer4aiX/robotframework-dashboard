@@ -258,16 +258,16 @@ function clear_project_filter() {
     for (const input of tagElements) {
         input.checked = false;
         input.parentElement.classList.remove("d-none"); //show filtered rows
-        if (input.id == "All") input.checked = true;
+        if (input.id == "runTagCheckBoxAll") input.checked = true;
     }
-    update_filter_active_indicator("All", "filterRunTagSelectedIndicator");
+    update_filter_active_indicator("runTagCheckBoxAll", "filterRunTagSelectedIndicator");
 }
 
 function set_filter_show_current_project(projectName) {
     if (projectName.startsWith("project_")) {
         selectedTagSetting = projectName;
         setTimeout(() => { // hack to prevent update_menu calls from hinderance
-            update_filter_active_indicator("All", "filterRunTagSelectedIndicator");
+            update_filter_active_indicator("runTagCheckBoxAll", "filterRunTagSelectedIndicator");
         }, 500);
 
     } else {
