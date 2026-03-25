@@ -558,7 +558,7 @@ function setup_runtags_in_select_filter_buttons() {
         </li>
     `;
     const listItems = [listItemTemplate("All")].concat(
-        Array.from(tags).map(tag => listItemTemplate(tag))
+        Array.from(tags).sort().map(tag => listItemTemplate(tag))
     ).join("");
     const tagsSelect = document.getElementById("runTag");
     tagsSelect.innerHTML = andOrTags + listItems;
