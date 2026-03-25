@@ -985,8 +985,7 @@ function apply_filter_profile(profile, name) {
             tag=el.id.replace(/^runTagCheckBox/, "")
             if (tagMap[tag] !== undefined) el.checked = tagMap[tag];
         });
-        //TODO check
-        update_filter_active_indicator("All", "filterRunTagSelectedIndicator");
+        update_filter_active_indicator("runTagCheckBoxAll", "filterRunTagSelectedIndicator");
     }
     if (profile.useOrTags !== undefined) {
         const orEl = document.getElementById("useOrTags");
