@@ -58,15 +58,21 @@ Validate Component
     Take Screenshot    filename=${SCREENSHOT_FOLDER}/${name}    selector=id=${id}
     Validate Screenshot    screenshot=${name}    reference=${name}    folder=${folder}
 
+Open Filter Dialog
+    Click    selector=id=filters
+
+Close Filter Dialog
+    Click    selector=id=closeFilters
+
 Set Run Filter
     [Arguments]    ${value}
-    Click    selector=id=filters
+    Open Filter Dialog
     Select Options By    id=runs    value    ${value}
-    Click    selector=id=closeFilters
+    Close Filter Dialog
 
 Set Run Tags Filter
     [Arguments]    @{tags}    ${strict}=False
-    Click    selector=id=filters
+    Open Filter Dialog
     Click    selector=id=selectRunTags
     IF    ${strict}
         ${elements}    Get Elements    selector=id=runTag >> css=input.form-check-input
@@ -80,32 +86,32 @@ Set Run Tags Filter
     FOR    ${tag}    IN    @{tags}
         Check Checkbox    selector=id=runTagCheckBox${tag}
     END
-    Click    selector=id=closeFilters
+    Close Filter Dialog
 
 Set Versions Filter
     [Arguments]    @{versions}
-    Click    selector=id=filters
+    Open Filter Dialog
     Click    selector=id=selectProjectVersion
     FOR    ${version}    IN    @{versions}
         Check Checkbox    selector=id=projectVersionInputItem${version}
     END
-    Click    selector=id=closeFilters
+    Close Filter Dialog
 
 Set Date Filter
     [Arguments]    ${fromDate}=${None}    ${fromTime}=${None}    ${toDate}=${None}    ${toTime}=${None}
-    Click    selector=id=filters
+    Open Filter Dialog
     Sleep    time_=500ms
     IF    '${fromDate}' != '${None}'    Type Text    selector=id=fromDate    txt=${fromDate}    clear=True
     IF    '${fromTime}' != '${None}'    Type Text    selector=id=fromTime    txt=${fromTime}    clear=True
     IF    '${toDate}' != '${None}'    Type Text    selector=id=toDate    txt=${toDate}    clear=True
     IF    '${toTime}' != '${None}'    Type Text    selector=id=toTime    txt=${toTime}    clear=True
-    Click    selector=id=closeFilters
+    Close Filter Dialog
 
 Set Amount Filter
     [Arguments]    ${amount}    ${close_filter_dialog}=True
-    Click    selector=id=filters
+    Open Filter Dialog
     Fill Text    selector=id=amount    txt=${amount}
-    IF    ${close_filter_dialog}    Click    selector=id=closeFilters
+    IF    ${close_filter_dialog}    Close Filter Dialog
 
 Change Settings
     Click    selector=id=themeDark
@@ -122,7 +128,7 @@ Add Filter Profile For
 
 Add Filter Profile ${profile_name} For
     [Arguments]    @{selected_filters}    ${open_filter_dialog}=True
-    IF    ${open_filter_dialog}   Click    selector=id=filters
+    IF    ${open_filter_dialog}   Open Filter Dialog
     Click    selector=id=addFilterProfile
     Fill Text    selector=id=filterProfileName    txt=${profile_name}
     VAR    @{filters}    Runs    RunTags    Versions    FromDate    FromTime    ToDate    ToTime    Amount
@@ -135,14 +141,15 @@ Add Filter Profile ${profile_name} For
         END
     END
     Click    selector=id=saveFilterProfile
-    Click    selector=id=closeFilters
+    Close Filter Dialog
 
 Apply Filter Profile
     [Arguments]    ${profile_name}
-    Click    selector=id=filters
+    Open Filter Dialog
     Click    selector=id=selectFilterProfile
     Click    selector=id=profile${profile_name}
-    Click    selector=id=closeFilters
+    Take Screenshot
+    Close Filter Dialog
 
 Get Filter Profile Settings
     [Arguments]    ${profile_name}
@@ -152,9 +159,9 @@ Get Filter Profile Settings
     RETURN    ${filter_profile}
 
 Reset Filters
-    Click    selector=id=filters
+    Open Filter Dialog
     Click    selector=id=resetFilters
-    Click    selector=id=closeFilters
+    Close Filter Dialog
 
 Filter Profile ${profile_name} Should Be
     [Arguments]    ${filter_value_str}
@@ -181,6 +188,60 @@ Validate Selected Run Tags Of Filter Profile ${profile_name}
             List Should Contain Value    list_=${tags}    value=${tag}
         END
     END
+
+Validate Filter Settings
+    #TODO
+    [Arguments]    ${runs}=${EMPTY}
+    ...    ${runTags}=${EMPTY}
+    ...    ${versions}=${EMPTY}
+    ...    ${fromDate}=${EMPTY}
+    ...    ${fromTime}=${EMPTY}
+    ...    ${toDate}=${EMPTY}
+    ...    ${toTime}=${EMPTY}
+    ...    ${amount}=${EMPTY}
+
+    Open Filter Dialog
+    IF    len("${runs}")    Get Selected Options    id=runs    value    ==    ${runs}
+    IF    len("S{run_tags}")
+        VAR    @{selected_run_tags}    @{EMPTY}
+        ${elements}    Get Elements    selector=id=runTag >> css=input.form-check-input
+        FOR    ${element}    IN    @{elements}
+            ${id}    Get Attribute    ${element}    id
+            IF    "${id}".startswith("runTagCheckBox")
+                ${state}    Get Checkbox State    selector=${element}
+                IF    ${state}
+                    ${tag}    Replace String    string=${id}    search_for=runTagCheckBox    replace_with=${EMPTY}
+                    Append To List    ${selected_run_tags}    ${tag}
+                END
+            END
+        END
+        Log    ${selected_run_tags}
+        Should Be True    ${selected_run_tags} == "${runTags}".split()
+    END
+
+    IF    len("${versions}")
+        VAR    @{selected_versions}    @{EMPTY}
+        ${elements}    Get Elements    selector=id=projectVersionList >> css=input.form-check-input
+        FOR    ${element}    IN    @{elements}
+            ${id}    Get Attribute    ${element}    id
+            IF    "${id}".startswith("projectVersionInputItem")
+                ${state}    Get Checkbox State    selector=${element}
+                IF    ${state}
+                    ${version}    Replace String    string=${id}    search_for=projectVersionInputItem    replace_with=${EMPTY}
+                    Append To List    ${selected_versions}    ${version}
+                END
+            END
+        END
+        Log    ${selected_versions}
+        Should Be True    ${selected_versions} == "${versions}".split()
+    END
+    IF    len("${fromDate}")    Browser.Get Text    id=fromDate    ==    ${fromDate}
+    IF    len("${fromTime}")    Browser.Get Text    id=fromTime    ==    ${fromTime}
+    IF    len("${toDate}")    Browser.Get Text    id=toDate    ==    ${toDate}
+    IF    len("${toTime}")    Browser.Get Text    id=toTime    ==    ${toTime}
+    IF    len("${amount}")    Browser.Get Text    id=amount    ==    ${amount}
+
+    Close Filter Dialog
 
 Should Show ${runs} Of ${total_runs} Runs
     Get Property    selector=id=runTitle >> h6    property=innerText    assertion_operator===    assertion_expected=showing ${runs} of ${total_runs} runs
