@@ -58,6 +58,10 @@ var settings = {
             dark: {},
         }
     },
+    branding: {
+        title: "",
+        logo: "",
+    },
     menu: {
         overview: false,
         dashboard: true,
