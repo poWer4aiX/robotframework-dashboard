@@ -1,3 +1,5 @@
+@echo off
+REM Run all Python unit tests in tests/python/ and collect coverage
 set COVERAGE_FILE=results/.coverage
 set PYTHONPATH=%~dp0..
 if not exist results mkdir results
