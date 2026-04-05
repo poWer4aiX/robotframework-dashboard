@@ -21,7 +21,7 @@ There are three levels of tests in this project:
 ### Python Unit Tests
 Python unit tests are located in `tests/python/` and run with pytest.
 ```sh
-bash scripts/unittests.sh
+bash scripts/python-tests.sh
 ```
 
 ### JavaScript Unit Tests
@@ -32,7 +32,7 @@ npm run test:js
 ```
 Or on Windows:
 ```
-scripts\jstests.bat
+scripts\javascript-tests.bat
 ```
 To run in watch mode during development:
 ```sh
