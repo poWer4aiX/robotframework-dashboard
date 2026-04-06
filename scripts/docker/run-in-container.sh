@@ -18,7 +18,7 @@ docker -v 2> /dev/null ||
 [ -d .git ] ||
     die "you need to start this script from the toplevel directory of the robotframework-dashboard repository"
 
-my_uid=$(id -u)
-my_gid=$(id -g)
+USER_MAPPING="--user $(id -i):$(id -g)"
+[ "$(uname -o)" = Msys ] && USER_MAPPING=""
 
-docker run -it --rm --ipc=host -v.:/robotframework-dashboard --user ${my_uid}:${my_gid} $IMAGE "${@}"
+docker run -it --rm --ipc=host -v"./$(pwd)":/robotframework-dashboard $USER_MAPPING $IMAGE "${@}"
