@@ -29,7 +29,7 @@ var settings = {
         unified: false,
         dateLabels: true,
         legends: true,
-        aliases: false,
+        aliases: "run_start",
         milliseconds: false,
         axisTitles: true,
         animation: true,
@@ -124,6 +124,15 @@ var settings = {
     }
 };
 
+// Returns the run label for an item (run/suite/test/keyword) based on the current aliases mode.
+function get_run_label(item) {
+    const mode = settings.show.aliases;
+    if (mode === "alias") return item.run_alias;
+    if (mode === "run_name") return item.run_name ?? item.name;
+    return item.run_start;
+}
+
 export { 
-    settings
+    settings,
+    get_run_label
 };
