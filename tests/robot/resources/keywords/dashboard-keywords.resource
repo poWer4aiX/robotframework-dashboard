@@ -21,7 +21,7 @@ Stop Browser
     Close Browser
 
 Open Dashboard
-    New Context    colorScheme=dark    viewport={"width": 1920, "height": 1080}
+    New Context    colorScheme=dark    viewport={"width": 1920, "height": 1600}
     New Page    url=file:${ROOT_FOLDER}/robotdashboard_${DASHBOARD_INDEX}.html
     Wait For Elements State    selector=id=loading    state=hidden
     Click    selector=id=settings
@@ -50,7 +50,7 @@ Validate Screenshot
     [Arguments]    ${screenshot}    ${reference}    ${folder}
     VAR    ${reference}    ${REFERENCE_FOLDER}/${folder}/${reference}.png
     VAR    ${screenshot}    ${SCREENSHOT_FOLDER}/${screenshot}.png
-    Compare Images    reference_image=${reference}    candidate_image=${screenshot}    threshold=0.02   # 98% accuracy
+    Compare Images    reference_image=${reference}    candidate_image=${screenshot}    threshold=0.00   # 98% accuracy
 
 Validate Component
     [Arguments]    ${id}    ${name}    ${folder}
