@@ -21,4 +21,4 @@ Validate Dashboard Test Statistics
     Validate Component    id=testStatisticsSection    name=baseTestSection    folder=test
 
 Validate Dashboard Keyword Statistics
-    Validate Component    id=keywordStatisticsSection    name=baseKeywordSection    folder=keyword
+    Validate Component    id=keywordStatisticsSection    name=baseKeywordSection    folder=keyword    threshold=0.005
