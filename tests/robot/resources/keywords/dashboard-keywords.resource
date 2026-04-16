@@ -3,7 +3,7 @@ Library    Collections
 Library    String
 Library    json
 Library    Browser
-Library    DocTest.VisualTest
+Library    DocTest.VisualTest    embed_screenshots=True    screenshot_format=png
 Resource    ../variables/variables.resource
 
 
@@ -47,16 +47,17 @@ Open Tables Page
     Wait For Elements State    selector=id=tablesStatisticsSection
 
 Validate Screenshot
-    [Arguments]    ${screenshot}    ${reference}    ${folder}
+    [Arguments]    ${screenshot}    ${reference}    ${folder}    ${threshold}=${EMPTY}
     VAR    ${reference}    ${REFERENCE_FOLDER}/${folder}/${reference}.png
     VAR    ${screenshot}    ${SCREENSHOT_FOLDER}/${screenshot}.png
-    Compare Images    reference_image=${reference}    candidate_image=${screenshot}    threshold=0.00   # 98% accuracy
+    IF    "${threshold}"=="${EMPTY}"    VAR    ${threshold}    0.001    # 99.9% accuracy by default
+    Compare Images    reference_image=${reference}    candidate_image=${screenshot}    threshold=${threshold}
 
 Validate Component
-    [Arguments]    ${id}    ${name}    ${folder}
+    [Arguments]    ${id}    ${name}    ${folder}    ${threshold}=${EMPTY}
     Sleep    time_=1s
     Take Screenshot    filename=${SCREENSHOT_FOLDER}/${name}    selector=id=${id}
-    Validate Screenshot    screenshot=${name}    reference=${name}    folder=${folder}
+    Validate Screenshot    screenshot=${name}    reference=${name}    folder=${folder}    threshold=${threshold}
 
 Open Filter Dialog
     Click    selector=id=filters
