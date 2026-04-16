@@ -34,7 +34,7 @@ The **Graphs** tab contains the core configuration options for all charts in the
 | **Display Legends** | Show or hide graph legends. Useful to disable this when graphs contain many series. |
 | **Display Axis Titles** | Shows axis labels (e.g., *Run Time*, *Pass/Fail Count*). Disable for a cleaner look. |
 | **Display Run Start/Alias Labels On Axes** | Enables labels directly on graph axes. Disable for a cleaner look. |
-| **Display Alias Labels** | Labels graphs using **aliases** instead of the default *run_start*. |
+| **Run Label Display** | Controls which label is used to identify runs across graphs, tooltips, axes, and comparison selects. Three options are available: **Run Start** (default) — uses the raw `run_start` timestamp; **Alias** — uses the alias derived from the output filename (see [Aliases](/advanced-cli-examples#aliases-for-clean-dashboard-identification)); **Run Name** — uses the Robot Framework suite name recorded in the output file. When multiple runs share the same name, a numeric suffix is appended automatically (e.g. *Tests*, *Tests 2*, *Tests 3*). |
 | **Display Prefixes** | Shows or hides the `project_` prefix text on Overview page tags. |
 | **Display Milliseconds Run Start Labels** | Adds millisecond precision to run_start timestamps. |
 | **Display Drawing Animations** | Enables animated graph rendering. |
@@ -107,8 +107,8 @@ The **Theme** tab allows you to override the default colors used by the dashboar
 
 | Setting | Description |
 |---------|-------------|
-| **Custom Title** | A text label shown in the navigation bar next to the logo. Type any text to set it; leave blank to hide it. |
-| **Custom Logo** | Upload a PNG image to replace the default Robot Framework logo in the navigation bar. Only PNG files are accepted. |
+| **Custom Title** | A text label shown in the navigation bar next to the logo. Type any text to set it; leave blank to hide it. If `-t` / `--dashboardtitle` was set when generating the dashboard, that value takes **priority** and cannot be overridden from the UI. |
+| **Custom Logo** | Upload a PNG image to replace the default Robot Framework logo in the navigation bar. Images of any size or aspect ratio are accepted — the image is automatically scaled and padded to a square so it fits neatly in the logo slot. The logo is also applied as the browser tab **favicon** (at 48 × 48 px). Click **Reset** to restore the default. |
 
 ### Usage
 
@@ -125,6 +125,12 @@ The **Theme** tab allows you to override the default colors used by the dashboar
 - Theme colors and branding are stored in localStorage alongside other settings  
 - Export via the JSON tab to share custom themes with your team
 
+## Graph-Level Switches
+
+In addition to the settings modal, individual graphs have their own toggle switches and dropdown filters (e.g. *Ignore Skips*, *Only Last Run*, *Only Failed Tests*, *Status*, *Only Changes*, *Hour*). These graph-level switches are **automatically saved to localStorage** and restored when the dashboard is reopened — your per-graph preferences are remembered across browser sessions.
+
+See [Graphs & Tables – Graph Switch Persistence](/graphs-tables#graph-switch-persistence) for the full list of persisted switches and their defaults. All graph switches are stored under the `switch` key in the settings JSON.
+
 ## JSON Settings (JSON Tab)
 
 For advanced use cases, you can directly edit the internal settings JSON.  
@@ -133,7 +139,7 @@ This allows complete control over:
 - Section ordering  
 - Graph ordering  
 - Graph sizes  
-- Switch toggles  
+- Switch toggles (including graph-level switches like *Ignore Skips*, *Only Last Run*, etc.)  
 - Display toggles  
 - Keyword configuration  
 - Animation settings  

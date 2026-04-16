@@ -24,12 +24,25 @@ var settings = {
         suitePathsTestSection: false,
         suitePathsCompareSection: false,
         useLibraryNames: false,
+        heatmapStatus: "All",
+        heatmapHour: "All",
+        onlyFailedFolders: false,
+        ignoreSkips: false,
+        ignoreSkipsRecent: false,
+        onlyLastRunSuite: false,
+        onlyLastRunTest: false,
+        onlyLastRunKeyword: false,
+        onlyLastRunKeywordMostUsed: false,
+        testOnlyChanges: false,
+        testStatusFilter: "All",
+        compareOnlyChanges: false,
+        compareStatusFilter: "All",
     },
     show: {
         unified: false,
         dateLabels: true,
         legends: true,
-        aliases: false,
+        aliases: "run_start",
         milliseconds: false,
         axisTitles: true,
         animation: true,
@@ -124,6 +137,15 @@ var settings = {
     }
 };
 
+// Returns the run label for an item (run/suite/test/keyword) based on the current aliases mode.
+function get_run_label(item) {
+    const mode = settings.show.aliases;
+    if (mode === "alias") return item.run_alias;
+    if (mode === "run_name") return item.run_name ?? item.name;
+    return item.run_start;
+}
+
 export { 
-    settings
+    settings,
+    get_run_label
 };

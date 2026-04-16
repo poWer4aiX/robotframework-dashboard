@@ -1,14 +1,23 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock dependencies
-vi.mock('@js/variables/settings.js', () => ({
-    settings: {
+vi.mock('@js/variables/settings.js', () => {
+    const settings = {
         show: {
-            aliases: false,
+            aliases: 'run_start',
             rounding: 6,
         },
-    },
-}));
+    };
+    return {
+        settings,
+        get_run_label: (item) => {
+            const mode = settings.show.aliases;
+            if (mode === 'alias') return item.run_alias;
+            if (mode === 'run_name') return item.run_name ?? item.name;
+            return item.run_start;
+        },
+    };
+});
 vi.mock('@js/variables/globals.js', () => ({
     inFullscreen: false,
     inFullscreenGraph: '',
